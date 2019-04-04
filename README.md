@@ -2,9 +2,13 @@
 
 This is my ZSH theme.
 
+## Dependencies
+
+* A Font with Nerd Fonts embedded, for example Nerd Hack Font: https://github.com/ryanoasis/nerd-fonts
+
 ## Install
 
-### `zgen`
+### ZGen
 
 Use `zgen` to install this as a plugin, for example:
 
@@ -14,7 +18,7 @@ if ! zgen saved; then
 fi
 ```
 
-## Manual (`oh-my-zsh`)
+### oh-my-zsh
 
 You can of course also clone the repository and symlink into the theme directory like `~/.oh-my-zsh/themes/`.
 
