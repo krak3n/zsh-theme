@@ -31,3 +31,11 @@ Then set your theme in your `~/.zshrc`:
 ```zsh
 ZSH_THEME=krak3n
 ```
+
+## Screenshots
+
+### Terminal with Golang Version and Git Branch
+
+![Golang Version with Git Branch][screen1]
+
+[screen1]: images/screen1.png "Golang Version with Git Branch"
