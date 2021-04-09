@@ -12,6 +12,8 @@ RED=001
 MAGENTA=005
 GREEN=002
 
+NEWLINE=$'\n'
+
 # Virtualenv
 function virtualenv_info {
     if [[ -n $VIRTUAL_ENV ]] then
@@ -28,10 +30,8 @@ function go_version {
 
 # GCloud Account / Project
 function gcloud_context {
-	if (( $+commands[gcloud] )) then
-		ACCOUNT=`gcloud config list --format 'value(core.account)' 2>/dev/null`
-		PROJECT=`gcloud config list --format 'value(core.project)' 2>/dev/null`
-		echo "%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ACCOUNT/$PROJECT%"
+    if [[ -n $ZSH_GCLOUD_PROMPT ]] then
+		echo "%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ZSH_GCLOUD_PROMPT"
 	fi
 }
 
@@ -50,17 +50,19 @@ ZSH_THEME_GIT_PROMPT_PREFIX=" %{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$YELLOW]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$FX[reset]%}"
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$FG[$RED]%}%{$FX[reset]%}"
 
-# Prompts
+# Add GCP context to prompt if enabled
+if [[ -v THEME_GCP_CONTEXT_PROMPT ]]; then
+	PROMPT_START+="$(gcloud_context) "
+fi
+
+# Add k8s context to prompt if enabled
+if [[ -v THEME_K8S_CONTEXT_PROMPT ]]; then
+	PROMPT_START+="$(k8s_context)${NEWLINE}"
+fi
+
 PROMPT_USER="%{$FG[$BLUE]%}%{$FX[reset]%} %n %{$FG[$YELLOW]%}%{$FX[reset]%}"
-PROMPT_START="$PROMPT_USER %."
+PROMPT_START+="$PROMPT_USER %."
 
 # Default Prompt
 PROMPT='$PROMPT_START$(go_version)$(git_prompt_info)
 $RET_STATUS '
-
-# Add k8s context to prompt if enabled
-if [[ -v THEME_K8S_CONTEXT_PROMPT ]]; then
-PROMPT='$(k8s_context)
-$PROMPT_START$(go_version)$(git_prompt_info)
-$RET_STATUS '
-fi
