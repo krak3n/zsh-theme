@@ -1,54 +1,98 @@
-#!/usr/bin/env zsh
-
 #
-# Chris ZSH Theme
+# Oh My ZSH
 #
 
-# Colours
-YELLOW=003
-GREY=015
-BLUE=004
-RED=001
-MAGENTA=005
-GREEN=002
+fpath=("$HOME/.completions" $fpath)
 
-NEWLINE=$'\n'
+export PATH="/usr/local/sbin:$PATH"
+export EDITOR='nvim'
+export FZF_BASE=$HOME/.fzf
+export CLOUDSDK_HOME=$HOME/.google-cloud-sdk
 
-# Virtualenv
-function virtualenv_info {
-    if [[ -n $VIRTUAL_ENV ]] then
-        echo "%{$FX[reset]%} `basename $VIRTUAL_ENV`%{$FX[reset]%} %{$FG[$MAGENTA]%}%{$FX[reset]%}"
-    fi
-}
+###################
+# Pre run scripts
+###################
 
-# Go Version'
-function go_version {
-	if [[ -n $gvm_go_name ]] then
-		echo " %{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $gvm_go_name"
-	fi
-}
-
-# Return Status Hinting
-RET_STATUS="%(?:%{$FG[$GREEN]%}➜:%{$FG[$RED]%}➜)%{$FX[reset]%}"
-
-# Git Prompt
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$YELLOW]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$FX[reset]%}"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$FG[$RED]%}%{$FX[reset]%}"
-
-# Add GCP context to prompt if enabled
-if [[ -n $ZSH_GCLOUD_PROMPT ]] then
-	PROMPT_START+="%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_GCLOUD_PROMPT%{$FX[reset]%}${NEWLINE}"
+if [ -d $HOME/.zsh.pre.d ]; then
+	for file in $HOME/.zsh.pre.d/**/*(.); do source $file; done
 fi
 
-# Add k8s context to prompt if enabled
-if [[ -n $ZSH_KUBECTL_PROMPT ]] then
-	PROMPT_START+="%{$FX[reset]%}%{$FG[$BLUE]%}ﴱ%{$FX[reset]%} $ZSH_KUBECTL_PROMPT${NEWLINE}"
+###################
+# Plugins
+###################
+
+# Zgen Plugin Manager
+source "${HOME}/.zgen/zgen.zsh"
+
+# if the init scipt doesn't exist
+if ! zgen saved; then
+    zgen oh-my-zsh
+
+	# SSH
+    zgen oh-my-zsh plugins/ssh
+    zgen oh-my-zsh plugins/ssh-agent
+
+	# UX
+    zgen oh-my-zsh plugins/git
+    zgen oh-my-zsh plugins/direnv
+    zgen oh-my-zsh plugins/httpie
+    zgen oh-my-zsh plugins/fzf
+
+	# Platforms / Utils
+    zgen oh-my-zsh plugins/aws
+    zgen oh-my-zsh plugins/gcloud
+    zgen oh-my-zsh plugins/docker
+    zgen oh-my-zsh plugins/docker-compose
+    zgen oh-my-zsh plugins/kubectl
+    zgen oh-my-zsh plugins/helm
+    zgen load superbrothers/zsh-kubectl-prompt
+
+	# Languages
+    zgen oh-my-zsh plugins/golang
+
+	# Theme
+    zgen load krak3n/zsh-theme krak3n.zsh-theme
+
+    zgen save
 fi
 
-PROMPT_USER="%{$FG[$BLUE]%}%{$FX[reset]%} %n %{$FG[$YELLOW]%}%{$FX[reset]%}"
-PROMPT_START+="$PROMPT_USER %."
+#
+# Plugin Agnostic Settings
+#
 
-# Default Prompt
-PROMPT='$PROMPT_START$(go_version)$(git_prompt_info)
-$RET_STATUS '
+autoload -U colors; colors
+autoload -Uz url-quote-magic
+
+zle -N self-insert url-quote-magic
+
+autoload -U compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+#
+# Go Version Manager
+#
+
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+
+# # Copy / Paste integration aliases
+if (( $+commands[xclip] )); then
+	alias cc='xclip -selection clipboard'
+	alias cv='xclip -selection clipboard -o'
+fi
+
+# Copy / Paste integration aliases
+if (( $+commands[pbcopy] )); then
+	alias cc='pbcopy'
+fi
+
+if (( $+commands[pbpaste] )); then
+	alias cv='pbpaste'
+fi
+
+###################
+# Post run scripts
+###################
+
+if [ -d $HOME/.zsh.post.d ]; then
+	for file in $HOME/.zsh.post.d/**/*(.); do source $file; done
+fi
