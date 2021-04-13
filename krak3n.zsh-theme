@@ -30,7 +30,7 @@ function k8s_context() {
 # Gcloud account / project
 function gcloud_context() {
 	if [[ -n $ZSH_GCLOUD_PROMPT ]] then
-		echo "%{$FX[reset]%}%{$FG[$BLUE]%}ﴱ%{$FX[reset]%} $ZSH_GCLOUD_PROMPT%{$FX[reset]%}"
+		echo "%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ZSH_GCLOUD_PROMPT%{$FX[reset]%}"
 		echo "\r\n"
 	fi
 }
