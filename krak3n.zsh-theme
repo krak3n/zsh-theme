@@ -6,7 +6,7 @@
 
 # Colours
 YELLOW=003
-GREY=015
+GREY=008
 BLUE=004
 RED=001
 MAGENTA=005
@@ -22,7 +22,7 @@ function user {
 # Kubernetes Conctext / Namespace
 function k8s_context() {
 	if [[ -n $ZSH_KUBECTL_PROMPT ]] then
-		echo "%{$FX[reset]%}%{$FG[$BLUE]%}ﴱ%{$FX[reset]%} $ZSH_KUBECTL_PROMPT%{$FX[reset]%}"
+		echo "%{$FX[reset]%}%{$FG[$BLUE]%}ﴱ%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_KUBECTL_PROMPT%{$FX[reset]%}"
 		echo "\r\n"
 	fi
 }
@@ -30,7 +30,7 @@ function k8s_context() {
 # Gcloud account / project
 function gcloud_context() {
 	if [[ -n $ZSH_GCLOUD_PROMPT ]] then
-		echo "%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ZSH_GCLOUD_PROMPT%{$FX[reset]%}"
+		echo "%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_GCLOUD_PROMPT%{$FX[reset]%}"
 		echo "\r\n"
 	fi
 }
