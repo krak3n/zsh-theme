@@ -44,8 +44,9 @@ function virtualenv_info {
 
 # Go Version
 function go_version {
-	if [[ -n $gvm_go_name ]] then
-		echo " %{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $gvm_go_name"
+	if (( $+commands[go] )); then
+		VER=$(go version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')
+		echo " %{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ver"
 	fi
 }
 
