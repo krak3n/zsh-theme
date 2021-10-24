@@ -21,6 +21,10 @@ function user {
 
 # Kubernetes Conctext / Namespace
 function k8s_context() {
+	if [[ -v DISABLE_KUBECTL_PROMPT ]]; then
+		return
+	fi
+
 	if [[ -n $ZSH_KUBECTL_PROMPT ]] then
 		echo "%{$FX[reset]%}%{$FG[$BLUE]%}ﴱ%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_KUBECTL_PROMPT%{$FX[reset]%}"
 		echo "\r\n"
@@ -29,6 +33,10 @@ function k8s_context() {
 
 # Gcloud account / project
 function gcloud_context() {
+	if [[ -v DISABLE_GCLOUD_PROMPT ]]; then
+		return
+	fi
+
 	if [[ -n $ZSH_GCLOUD_PROMPT ]] then
 		echo "%{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_GCLOUD_PROMPT%{$FX[reset]%}"
 		echo "\r\n"
