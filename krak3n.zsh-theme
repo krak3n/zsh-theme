@@ -21,7 +21,7 @@ function user {
 
 # Kubernetes Conctext / Namespace
 function k8s_context() {
-	if [[ -v DISABLE_KUBECTL_PROMPT ]]; then
+	if [[ -v $DISABLE_KUBECTL_PROMPT ]]; then
 		return
 	fi
 
@@ -33,7 +33,7 @@ function k8s_context() {
 
 # Gcloud account / project
 function gcloud_context() {
-	if [[ -v DISABLE_GCLOUD_PROMPT ]]; then
+	if [[ -v $DISABLE_GCLOUD_PROMPT ]]; then
 		return
 	fi
 
