@@ -62,10 +62,10 @@ function go_version {
 RET_STATUS="%(?:%{$FG[$GREEN]%}➜:%{$FG[$RED]%}➜)%{$FX[reset]%}"
 
 # Git Prompt
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$YELLOW]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$FX[reset]%}"
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$FG[$BLUE]%}%{$FX[reset]%} %{$FG[$YELLOW]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$FX[reset]%} "
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$FG[$RED]%}%{$FX[reset]%}"
 
 # Default Prompt
-PROMPT='$(gcloud_context)$(k8s_context)$(user)$(go_version)$(git_prompt_info)
-$RET_STATUS '
+PROMPT='$(gcloud_context)$(k8s_context)$(user)$(go_version)
+$(git_prompt_info)$RET_STATUS '
