@@ -26,7 +26,7 @@ function k8s_context() {
 	fi
 
 	if [[ -n $ZSH_KUBECTL_PROMPT ]] then
-		echo "%{$FX[reset]%}%{$FG[$BLUE]%}ﴱ%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_KUBECTL_PROMPT%{$FX[reset]%}"
+		echo "%{$FX[reset]%}%{$FG[$BLUE]%}󰠳%{$FX[reset]%} %{$FG[$GREY]%}$ZSH_KUBECTL_PROMPT%{$FX[reset]%}"
 		echo "\r\n"
 	fi
 }
