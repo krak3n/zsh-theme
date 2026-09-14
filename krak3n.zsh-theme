@@ -6,6 +6,9 @@
 # Standalone: does not require oh-my-zsh or zgen. Only needs zsh itself + git.
 #
 
+# Required so the $(...) segments in $PROMPT are re-evaluated on every prompt draw
+setopt PROMPT_SUBST
+
 # Colours
 YELLOW=003
 GREY=008
