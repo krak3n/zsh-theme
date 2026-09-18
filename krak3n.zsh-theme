@@ -72,7 +72,7 @@ function go_version {
 	if (( $+commands[go] )) && _in_go_project; then
 		local words=(${(z)$(go version)})
 		local ver=${words[3]#go}
-		echo " %{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ver"
+		echo " %{$FX[reset]%}%{$FG[$BLUE]%}%{$FX[reset]%} $ver"
 	fi
 }
 
