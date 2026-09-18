@@ -76,6 +76,52 @@ function go_version {
 	fi
 }
 
+# Claude usage (session/week %, cached + refreshed async so prompts never
+# block on the ~2.5s `claude -p "/usage"` API round-trip)
+zmodload zsh/stat
+
+# Claude's brand orange (#d97757) — truecolor, since it's not in the 256 palette
+CLAUDE_ORANGE=$'%{\e[38;2;217;119;87m%}'
+
+CLAUDE_USAGE_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/claude-usage"
+CLAUDE_USAGE_LOCK="${XDG_CACHE_HOME:-$HOME/.cache}/claude-usage.lock"
+CLAUDE_USAGE_TTL=${CLAUDE_USAGE_TTL:-600}
+
+function _claude_usage_refresh {
+	mkdir -p "${CLAUDE_USAGE_CACHE:h}"
+
+	if [[ -f $CLAUDE_USAGE_LOCK ]]; then
+		local lock_mtime=$(zstat +mtime -- "$CLAUDE_USAGE_LOCK" 2>/dev/null)
+		(( $(date +%s) - ${lock_mtime:-0} < 120 )) && return
+	fi
+	touch "$CLAUDE_USAGE_LOCK"
+
+	{
+		local out session week
+		out=$(claude -p "/usage" 2>/dev/null)
+		session=$(echo "$out" | sed -n 's/.*Current session: \([0-9]*\)%.*/\1/p')
+		week=$(echo "$out" | sed -n 's/.*Current week[^:]*: \([0-9]*\)%.*/\1/p')
+		[[ -n $session && -n $week ]] && echo "$session $week" > "$CLAUDE_USAGE_CACHE"
+		rm -f "$CLAUDE_USAGE_LOCK"
+	} &!
+}
+
+function claude_usage_prompt {
+	if [[ -n $DISABLE_CLAUDE_USAGE_PROMPT ]] || (( ! $+commands[claude] )); then
+		return
+	fi
+
+	local mtime=0
+	[[ -f $CLAUDE_USAGE_CACHE ]] && mtime=$(zstat +mtime -- "$CLAUDE_USAGE_CACHE" 2>/dev/null)
+	(( $(date +%s) - ${mtime:-0} > CLAUDE_USAGE_TTL )) && _claude_usage_refresh
+
+	[[ -f $CLAUDE_USAGE_CACHE ]] || return
+	local session week
+	read -r session week < "$CLAUDE_USAGE_CACHE"
+	[[ -z $session ]] && return
+	echo " %{$FX[reset]%}${CLAUDE_ORANGE}%{$FX[reset]%} %{$FG[$GREY]%}${session}%%/${week}%%%{$FX[reset]%}"
+}
+
 # Return Status Hinting
 RET_STATUS="%(?:%{$FG[$GREEN]%}➜:%{$FG[$RED]%}➜)%{$FX[reset]%}"
 
@@ -97,5 +143,5 @@ function git_prompt_info {
 }
 
 # Default Prompt
-PROMPT='$(gcloud_context)$(k8s_context)$(user)$(go_version)
+PROMPT='$(gcloud_context)$(k8s_context)$(user)$(go_version)$(claude_usage_prompt)
 $(git_prompt_info)$RET_STATUS '
