@@ -78,7 +78,9 @@ function go_version {
 
 # Claude usage (session/week %, cached + refreshed async so prompts never
 # block on the ~2.5s `claude -p "/usage"` API round-trip)
-zmodload zsh/stat
+zmodload -F zsh/stat b:zstat  # only the zstat builtin -- plain "stat" would
+                               # shadow /usr/bin/stat with incompatible flags,
+                               # breaking zsh-kubectl-prompt's own stat calls
 
 # Claude's brand orange (#d97757) — truecolor, since it's not in the 256 palette
 CLAUDE_ORANGE=$'%{\e[38;2;217;119;87m%}'
